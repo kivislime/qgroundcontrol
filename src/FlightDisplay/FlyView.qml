@@ -91,17 +91,67 @@ Item {
         anchors.bottom:     parent.bottom
         anchors.left:       parent.left
         anchors.right:      parent.right
-
+     //TODO: RU, изменил
         FlyViewMap {
-            id:                     mapControl
-            planMasterController:   _planController
-            rightPanelWidth:        ScreenTools.defaultFontPixelHeight * 9
-            pipView:                _pipView
-            pipMode:                !_mainWindowIsMap
-            toolInsets:             customOverlay.totalToolInsets
-            mapName:                "FlightDisplayView"
-            enabled:                !viewer3DWindow.isOpen
+            id: mapControl
+            anchors.fill: parent
+            planMasterController: _planController
+            rightPanelWidth: ScreenTools.defaultFontPixelHeight * 9
+            pipView: _pipView
+            pipMode: !_mainWindowIsMap
+            toolInsets: customOverlay.totalToolInsets
+            mapName: "FlightDisplayView"
+            enabled: !viewer3DWindow.isOpen
+
         }
+     //TODO: RU, изменил
+        Slider {
+              id: rotationSlider
+              from: 0
+              to: 360
+              stepSize: 1
+              value: 0
+              width: parent.width * 0.3
+              height: 40
+              anchors.horizontalCenter: parent.horizontalCenter
+              anchors.bottom: parent.bottom
+              z: 10
+
+              onValueChanged: {
+                  mapControl.bearing = value  // Устанавливаем поворот для карты
+              }
+          }
+        // MouseArea {
+        //     anchors.fill: parent
+        //     drag.target: null
+
+        //     onPressed: {
+        //         if (mouse.button === Qt.LeftButton) {
+        //             lastMouseX = mouse.x;
+        //             lastMouseY = mouse.y; // Сохраняем вертикальное положение мыши
+        //         }
+        //     }
+
+        //     onPositionChanged: {
+        //         if (mouse.button === Qt.LeftButton) {
+        //             let deltaX = mouse.x - lastMouseX;
+        //             let deltaY = mouse.y - lastMouseY;
+
+        //             // Вращение карты
+        //             let angleInRadians = mapControl.rotation * Math.PI / 180;
+        //             let adjustedDeltaX = deltaX * Math.cos(angleInRadians) - deltaY * Math.sin(angleInRadians);
+        //             let adjustedDeltaY = deltaX * Math.sin(angleInRadians) + deltaY * Math.cos(angleInRadians);
+
+        //             // Перемещение карты
+        //             mapControl.center.x -= adjustedDeltaX;
+        //             mapControl.center.y -= adjustedDeltaY; // Добавляем перемещение по вертикали
+
+        //             lastMouseX = mouse.x; // Обновляем положение мыши
+        //             lastMouseY = mouse.y; // Обновляем вертикальное положение мыши
+        //         }
+        //     }
+        // }
+
 
         FlyViewVideo {
             id:         videoControl
