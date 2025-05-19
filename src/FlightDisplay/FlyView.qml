@@ -218,39 +218,6 @@ Item {
               console.log("Component.onCompleted: activeVehicle =", veh);
           }
 
-
-        // MouseArea {
-        //     anchors.fill: parent
-        //     drag.target: null
-
-        //     onPressed: {
-        //         if (mouse.button === Qt.LeftButton) {
-        //             lastMouseX = mouse.x;
-        //             lastMouseY = mouse.y; // Сохраняем вертикальное положение мыши
-        //         }
-        //     }
-
-        //     onPositionChanged: {
-        //         if (mouse.button === Qt.LeftButton) {
-        //             let deltaX = mouse.x - lastMouseX;
-        //             let deltaY = mouse.y - lastMouseY;
-
-        //             // Вращение карты
-        //             let angleInRadians = mapControl.rotation * Math.PI / 180;
-        //             let adjustedDeltaX = deltaX * Math.cos(angleInRadians) - deltaY * Math.sin(angleInRadians);
-        //             let adjustedDeltaY = deltaX * Math.sin(angleInRadians) + deltaY * Math.cos(angleInRadians);
-
-        //             // Перемещение карты
-        //             mapControl.center.x -= adjustedDeltaX;
-        //             mapControl.center.y -= adjustedDeltaY; // Добавляем перемещение по вертикали
-
-        //             lastMouseX = mouse.x; // Обновляем положение мыши
-        //             lastMouseY = mouse.y; // Обновляем вертикальное положение мыши
-        //         }
-        //     }
-        // }
-
-
         FlyViewVideo {
             id:         videoControl
             pipView:    _pipView
