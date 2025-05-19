@@ -40,6 +40,8 @@ Item {
     // Properties of UTM adapter
     property bool utmspSendActTrigger: false
 
+    property var activeVeh: QGroundControl.multiVehicleManager.activeVehicle
+
     PlanMasterController {
         id:                     _planController
         flyView:                true
@@ -121,6 +123,102 @@ Item {
                   mapControl.bearing = value  // Устанавливаем поворот для карты
               }
           }
+
+        // Подписка на изменение активного транспортного средства
+        Connections {
+            target: QGroundControl.multiVehicleManager
+            onActiveVehicleChanged: {
+                activeVeh = QGroundControl.multiVehicleManager.activeVehicle;
+                console.log("Active vehicle changed:", activeVeh);
+            }
+        }
+
+        // Отложенное логирование для отладки (например, через 5 секунд)
+        Timer {
+            interval: 5000
+            running: true
+            repeat: false
+            onTriggered: {
+                console.log("activeVeh after delay:", activeVeh);
+            }
+        }
+
+        // Оверлей для отображения данных об углах
+        Rectangle {
+              id: attitudePanel
+              anchors.top: parent.top
+              anchors.right: parent.right
+              anchors.margins: 10
+              anchors.rightMargin: 140
+              width: 180
+              height: 100
+              color: "#AA000000"
+              radius: 5
+              border.color: "#444"
+
+              Column {
+                  anchors.fill: parent
+                  padding: 5
+                  spacing: 3
+
+                  Text {
+                      id: attitudeText
+                      // Первоначальный текст
+                      text: "Ожидание данных..."
+                      color: "white"
+                      font.pixelSize: 14
+                  }
+              }
+          }
+
+        Timer {
+                id: dataUpdateTimer
+                interval: 3000
+                running: true
+                repeat: true
+                onTriggered: {
+                    var veh = QGroundControl.multiVehicleManager.activeVehicle;
+                    if (veh) {
+                        // Логируем для отладки
+                        if (veh.roll) {
+                            console.log("veh.roll:", veh.roll, "rawValue:", veh.roll.rawValue);
+                        } else {
+                            console.log("veh.roll отсутствует");
+                        }
+
+                        if(veh.pitch){
+                            console.log("veh.pitch:", veh.pitch, "rawValue:", veh.pitch.rawValue);
+                        }else{
+                            console.log("veh.pitch отсутствует");
+                        }
+
+                        if(veh.mavlinkReceivedCount){
+                            console.log("veh.mavlinkReceivedCount:", veh.mavlinkReceivedCount);
+                        }else{
+                            console.log("veh.mavlinkReceivedCount отсутствует");
+                        }
+                        // veh.
+
+                    } else {
+                        console.log("activeVehicle все еще null");
+                    }
+                    if (veh && veh.roll && veh.roll.rawValue !== undefined &&
+                        veh.pitch && veh.pitch.rawValue !== undefined) {
+                        attitudeText.text = "Roll: " + (veh.roll.rawValue * 180 / Math.PI).toFixed(1) + "°\n" +
+                                            "Pitch: " + (veh.pitch.rawValue * 180 / Math.PI).toFixed(1) + "°\n" +
+                        "mavlinkReceivedCount: " + (veh.mavlinkReceivedCount).toFixed(1) + "\n";
+                    } else {
+                        attitudeText.text = "Нет данных";
+                    }
+                }
+            }
+
+          Component.onCompleted: {
+              var veh = QGroundControl.multiVehicleManager.activeVehicle;
+              console.log("Component.onCompleted: activeVehicle =", veh);
+          }
+
+
         // MouseArea {
         //     anchors.fill: parent
         //     drag.target: null
